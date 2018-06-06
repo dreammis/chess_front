@@ -1,0 +1,54 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="userinfo">
+    <block>
+      <view class="head">
+        <view class="userinfo-avatar">
+          <open-data type="userAvatarUrl"></open-data>
+        </view>
+      </view>
+      <open-data type="userNickName" lang="zh_CN"></open-data>
+    </block>
+    <!-- <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 授权登录 </button>
+     <block wx:else>
+      <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+    </block>   -->
+  </view>
+  <view class='home'>
+    <view class='content'>
+      <view class='btn btnIcon2' wx:if="{{roomId}}" bindtap="addOldRoomBegin"> 重新进入房间 </view>
+      <view class='btn btnIcon1' wx:if="{{!hasUserInfo}}">
+        <button class='noBg' open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 创建房间 </button>
+      </view>
+      <view class='btn btnIcon1' wx:else bindtap="createRoom"> 创建房间 </view>
+      <view class='btn btnIcon2' bindtap="addRoom"> 加入房间 </view>
+    </view>
+    <view class="popup" animation="{{animationData}}" wx:if="{{popup}}">
+      <view class="popupBg" bindtap='closePop'></view>
+      <view class="popupInfo kickOutBtn">
+        <!-- <input type='text' bindinput='setRoomName' placeholder='请输入房间名称' />
+        <input type='password' bindinput='setRoomPassWord' placeholder='请输入房间密码' /> -->
+        <view class='beginInfo'>是否重新创建房间</view>
+        <view class='btn2' bindtap='closePop'>取消</view>
+        <view class='btn2' bindtap="addRomeSure"> {{type=="create"?"确认创建":"确认加入"}} </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{hasOldRoom}}" animation="{{animationData}}" class='kickOut'>
+    <view class='wBg' bindtap='canncal'></view>
+    <view class='kickOutBtn roomListBegin'>
+      <view class='beginInfo'>
+        <view>房间列表</view>
+        <scroll-view  class='roomListScroll' scroll-y scroll-with-animation="true">
+          <view wx:for="{{nowRoomIdList}}" wx:for-index="idx" wx:key="{{item.id}}" data-replay="{{item}}" bindtap='selectRoom'  class='{{item.id==roomId?"roomList active":"roomList"}}'>
+            {{item.id}}房间
+          </view>
+          </scroll-view>
+      </view>
+      <view>是否进入{{roomId}}房间</view>
+      <view class='btn2' bindtap='canncal'>取消</view>
+      <view class='btn2' bindtap="addOldRoom">进入</view>
+    </view>
+  </view>
+</view>

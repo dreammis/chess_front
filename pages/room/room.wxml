@@ -1,0 +1,98 @@
+<view class='room'>
+  <button class='addRoomBtn' type="primary" wx:if="{{!hasUserInfo}}" size="{{primarySize}}" loading="{{loading}}" plain="{{plain}}" disabled="{{disabled}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 加入房间 </button>
+  <view wx:else>
+    <view class='topBtn'>
+      <view wx:if='{{come=="share"}}' class='wechat' bindtap='layOut'>退出</view>
+
+      <view wx:if="{{!addus}}" class='wechat fr' bindtap='showWchat'>房间二维码</view>
+    </view>
+    <scroll-view class="allScroll" scroll-x>
+      <view class='header' style="width:{{width}}rpx">
+        <view class='userBg'></view>
+        <view class='userInfo'>
+          <view class='headerTitle'>
+            <view class='nameTitle ftB'>房间用户</view>
+            <view wx:if="{{user_id==now_user_id&&!addSao}}" class='fr nameTitle' bindtap='addUser'>添加</view>
+          </view>
+          <view class='person' wx:for="{{user}}" wx:for-index="idx" wx:key="{{item.id}}" data-replay="{{item}}" bindlongpress='kickOutMember'>
+            <view class="head">
+              <image src="{{item.img}}"></image>
+              <view wx:if="{{item.status==0}}" class='headBg'></view>
+              <!-- <open-data type="userAvatarUrl"></open-data> -->
+            </view>
+            <view class='mt10 nikeName'>
+              {{item.nickname}}
+              <!-- <open-data type="userNickName" lang="zh_CN"></open-data> -->
+            </view>
+          </view>
+        </view>
+      </view>
+      <scroll-view scroll-y scroll-with-animation="true" class='gameList' scroll-top="{{scrollTop}}" style="width:{{width}}rpx">
+        <view class='mp0' wx:for="{{games}}" wx:for-index="widx" wx:key="{{item}}">
+          <view class='gamesTitle'>第{{widx+1}}局</view>
+          <view class='person dataList' wx:for="{{games[widx]}}" wx:for-index="idx" wx:key="{{item.id}}">
+            <view class='button ft30' style="color:{{item.type==1?'#ffde2d':'#ff4a19'}};">{{item.type==1?"赢":"输"}}</view>
+            <view class='input ft30' style="color:{{item.type==1?'#ffde2d':'#ff4a19'}};">
+              {{item.gool}}
+            </view>
+          </view>
+        </view>
+        <view class='addBox' wx:if="{{user_id==now_user_id}}">
+          <view class="ov">
+            <view class='gamesTitle'>第{{games.length+1}}局</view>
+            <view class='person dataList' wx:for="{{user}}" wx:for-index="idx" wx:key="{{idx}}">
+              <view class='button ft30' style="color:{{item.type==1?'#ffde2d':'#ff4a19'}};" data-replay="{{idx}}" bindtap='typeChange'>{{item.type==1?"赢":"输"}}</view>
+              <input type='digit' style="color:{{item.type==1?'#ffde2d':'#ff4a19'}};" data-replay="{{idx}}" value="{{item.gool}}" bindinput='setGool' bindfocus='focusEve' class='input ft30' />
+            </view>
+          </view>
+          <button class='saveGame' bindtap='saveGame' style="width:{{width-12}}rpx">保存</button>
+        </view>
+      </scroll-view>
+      <view class='totalInfo' style="width:{{width}}rpx">
+        <view class="mt30">
+          <image style='width:44rpx; height:50rpx;vertical-align: middle; margin-right:10rpx;' src='../../images/money-icon.png' />总分数</view>
+        <view class='person dataList' wx:for="{{total}}" wx:for-index="idx" wx:key="{{idx}}">
+          <view class='button ft30' style="color:{{item.type==1?'#ffde2d':'#ff4a19'}};" data-replay="{{idx}}">{{item.type==1?"赢":"输"}}</view>
+          <view class='input ft30' style="color:{{item.type==1?'#ffde2d':'#ff4a19'}};">
+            {{item.gool}}
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    <view animation="{{animationData}}" wx:if="{{showWchat}}" class='showWchat'>
+      <view class='wBg' bindtap='hideWchat'></view>
+      <view class='wInfo'>
+        <image style="width: 100%; height: 100%; background-color: #eeeeee;" binderror="imageError" src="{{wechat}}"></image>
+      </view>
+    </view>
+  </view>
+  <view animation="{{animationData}}" class='kickOut' wx:if="{{kickOut}}">
+    <view class='wBg' bindtap='closeKickOut'></view>
+    <view class='kickOutBtn kickOutBtnSM'>
+      <view class='kickOutBtnInfo'>
+        <view class='btn2' bindtap='closeKickOut'>取消</view>
+        <view class='btn2' bindtap='KickOutPerson'>踢出房间</view>
+      </view>
+    </view>
+  </view>
+  <view animation="{{animationData}}" class='kickOut addUserInfo' wx:if="{{addUserInfo}}">
+    <view class='wBg' bindtap='closeAddUserInfo'></view>
+    <view class='kickOutBtn'>
+      <view class='kickOutBtnInfo'>
+        <camera wx:if="{{!headImg}}" device-position="back" flash="off" binderror="takePhotoError" style="width: 100%; height: 377rpx;"></camera>
+        <image wx:else style="width: 100%; height: 377rpx" binderror="imageError" src="{{headImg}}"></image>
+        <view wx:if="{{!headImg}}" class="btn-area">
+          <view class='btn2' type="primary" bindtap="takePhoto">拍照</view>
+        </view>
+        <view wx:else class="btn-area">
+          <view class='btn2' type="primary" bindtap="takePhotoAgain">重新拍照</view>
+        </view>
+        <view>
+          <input class='setUserName' type='text' bindinput="setUserName" placeholder='请输入用户姓名' value="{{item.username}}" class='input' />
+        </view>
+        <view class='btn2' bindtap='closeAddUserInfo'>取消</view>
+        <view class='btn2' bindtap='addUserInfo'>确认添加</view>
+      </view>
+    </view>
+  </view>
+</view>
